@@ -1,9 +1,11 @@
-supabase secrets set --env-file .env
-supabase functions deploy --no-verify-jwt function_name
+### Update env & upload function
+```bash
+$ supabase secrets set --env-file .env
+$ supabase functions deploy --no-verify-jwt function_name
+```
 
-
-
--- SQL
+### PostgreSQL
+```SQL
 CREATE TABLE IF NOT EXISTS
   accounts (
     id uuid not null primary key unique references auth.users on delete cascade,
@@ -12,6 +14,7 @@ CREATE TABLE IF NOT EXISTS
     locale VARCHAR(255),
     Created TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
   );
+alter table "accounts" enable row level security;
 
 CREATE TABLE IF NOT EXISTS
   subscriptions (
@@ -23,6 +26,7 @@ CREATE TABLE IF NOT EXISTS
     expires TIMESTAMP WITHOUT TIME ZONE,
     FOREIGN KEY (customer_id) REFERENCES accounts (customer_id) ON DELETE CASCADE
   );
+alter table "subscriptions" enable row level security;
 
 CREATE TABLE IF NOT EXISTS
   payments (
@@ -39,6 +43,7 @@ CREATE TABLE IF NOT EXISTS
     FOREIGN KEY (subscription_id) REFERENCES subscriptions (subscription_id) ON DELETE CASCADE,
     FOREIGN KEY (customer_id) REFERENCES accounts (customer_id) ON DELETE CASCADE
   );
+  alter table "payments" enable row level security;
 
   CREATE TABLE IF NOT EXISTS tokens (
     tokens_id VARCHAR(255) not null primary key unique,
@@ -46,9 +51,11 @@ CREATE TABLE IF NOT EXISTS
     access_token VARCHAR(255) NOT NULL,
     institution_id VARCHAR(255) NOT NULL,
     created TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (customer_id) REFERENCES accounts (customer_id) ON DELETE CASCADE
+    FOREIGN KEY (customer_id) REFERENCES accounts (customer_id) ON DELETE CASCADE,
+    UNIQUE (customer_id, institution_id)
 );
-
+  alter table "tokens" enable row level security;
+  
 -- create user, database
 create
 or replace function public.handle_new_user () returns trigger language plpgsql security definer
@@ -66,3 +73,4 @@ create
 or replace trigger on_auth_user_created
 after insert on auth.users for each row
 execute procedure public.handle_new_user ();
+```
