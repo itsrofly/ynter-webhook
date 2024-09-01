@@ -47,65 +47,25 @@ const tools = (version: string, schema: string) => {
                         "name": "ask_database",
                         "description": `
                          Use this function to answer user questions.
-                         Input should be a list of fully formed SQL queries for SQLite.
-                         Always split a complex query into different queries.                   
+                         Input should be a fully formed SQLite query.            
                         `,
                         "parameters": {
                             "type": "object",
                             "properties": {
-                                "list": {
-                                    "type": "array",
+                                "query": {
+                                    "type": "string",
                                     "description": `
-                                        A list of SQL queries to be executed. Each query should be written to extract relevant information based on the database schema provided below.
-                                        Only one list.
-                                    `,
-                                    "items": {
-                                        "type": "string",
-                                        "description": `
-                                            A single SQL query in plain text to extract info to answer the user's question.
-                                            SQL should be written using the following database schema:
-                                            ${schema}
-                                        `
-                                    }
+                                    SQL query extracting info to answer the user's question.
+                                    SQL should be written using this database schema:
+                                    ${schema}
+                                    The query should be returned in plain text, not in JSON.
+                                    `
                                 }
                             },
-                            "required": ["list"]
+                            "required": ["query"]
                         }
                     }
                 },
-                {
-                    "type": "function",
-                    "function": {
-                        "name": "edit_database",
-                        "description": `
-                         Use this function to perform operations that the user asks for (INSERT, UPDATE, DELETE).
-                         Input should be a list of fully formed SQL queries for SQLite.    
-                         No value is returned, this function is only for making changes.
-                         Always split a complex query into different queries.  
-                        `,
-                        "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "list": {
-                                    "type": "array",
-                                    "description": `
-                                        A list of SQL queries to be executed. Each query should be written to modify based on the database schema provided below.
-                                         Only one list.
-                                    `,
-                                    "items": {
-                                        "type": "string",
-                                        "description": `
-                                            A single SQL query in plain text to perform the necessary modification.
-                                            SQL should be written using the following database schema:
-                                            ${schema}
-                                        `
-                                    }
-                                }
-                            },
-                            "required": ["list"]
-                        }
-                    }
-                }
             ]);
     }
 };
@@ -115,8 +75,7 @@ const system_default =
 The user is not a developer, he doesn't know what is SQL.
 Always send text using Markdown. Send short answers, only longer if the user requests it.
 Use the user's data, found in the database to answer the user's questions, the data will be returned to you and use this data to create a better answer.
-The user may can ask you to import data from a pdf or excel file, use the data provided by the file to import the data.
-You are an accounting assistant, your job is to give the best recommendations and meet the user's needs.
+You're a professional accounting assistant, your job is to give the best recommendations and meet the user's needs.
 `
 
 Deno.serve({
