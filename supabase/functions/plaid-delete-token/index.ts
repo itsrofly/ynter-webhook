@@ -13,7 +13,7 @@ const supabase = createClient(
 
 // Set up the Plaid client library
 const plaidConfig = new Configuration({
-    basePath: PlaidEnvironments.sandbox,
+    basePath: PlaidEnvironments[Deno.env.get("PLAIDENV")!],
     baseOptions: {
         headers: {
             'PLAID-CLIENT-ID': Deno.env.get("PLAID_CLIENT_ID")!,
@@ -25,7 +25,7 @@ const plaidClient = new PlaidApi(plaidConfig);
 
 Deno.serve({
     onListen() {
-        console.log(`Server started 🟩`);
+        console.log(`Server started 🟩 Env:`, Deno.env.get("PLAIDENV")!);
     }
 }, async (request) => {
     if (request.method === 'OPTIONS') {
