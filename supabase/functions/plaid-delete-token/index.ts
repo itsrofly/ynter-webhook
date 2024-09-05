@@ -8,7 +8,7 @@ import { Configuration, PlaidEnvironments, PlaidApi } from "https://esm.sh/plaid
 // Set up supabase client
 const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
 
 // Set up the Plaid client library

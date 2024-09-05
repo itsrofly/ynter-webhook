@@ -17,7 +17,7 @@ const encoder = new Tiktoken(
     o200k_base.pat_str
 );
 
-const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!)
+const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!)
 
 interface Chat {
     args?: any
