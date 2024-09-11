@@ -107,7 +107,7 @@ Deno.serve({
         // Extract language and country code from request headers
         const acceptLanguage = request.headers.get("accept-language") || "";
         // Parse the language and country code, e.g., "en-US"
-        const [language, region] = acceptLanguage.split(",")[0].split("-");
+        const [language, _region] = acceptLanguage.split(",")[0].split("-");
 
         // Construct the linkTokenCreate request object
         const linkTokenCreateRequest: any = {
@@ -115,7 +115,9 @@ Deno.serve({
             products: ["transactions"],
             client_name: "Ynter",
             language: language || "en", // Default to 'en' if not available
-            country_codes: [region || "US"] // Default to 'US' if not available
+            country_codes: [
+                "US", "GB", "ES", "NL", "FR", "IE", "CA", "DE", "IT", "PL", "DK", "NO", "SE", "EE", "LT", "LV", "PT", "BE"
+            ] // All
         };
 
         const linkTokenResponse: any = {};
