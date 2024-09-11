@@ -43,7 +43,7 @@ Deno.serve({
     
     try {
         // Api Post Data
-        const payload: { token: string, institution_id?: string } = await request.json();
+        const payload: { token: string, institution_id?: string, region: string } = await request.json();
 
         // Check if user token is valid
         const { data: { user }, error } = await supabase.auth.getUser(payload.token);
@@ -104,6 +104,17 @@ Deno.serve({
             }
         }
 
+        const country_codes = [
+            "US", "PT", "GB", "ES", "NL", "FR", "IE", "CA", "DE", "IT", "PL", "DK", "NO", "SE", "EE", "LT", "LV", "BE"
+        ]
+
+        if (country_codes.includes(payload.region)) {
+            // Remove the region from its current position
+            country_codes.splice(country_codes.indexOf(payload.region), 1);
+            // Add the region at the start of the array
+            country_codes.unshift(payload.region);
+        }
+
         // Extract language and country code from request headers
         const acceptLanguage = request.headers.get("accept-language") || "";
         // Parse the language and country code, e.g., "en-US"
@@ -115,9 +126,7 @@ Deno.serve({
             products: ["transactions"],
             client_name: "Ynter",
             language: language || "en", // Default to 'en' if not available
-            country_codes: [
-                "US", "GB", "ES", "NL", "FR", "IE", "CA", "DE", "IT", "PL", "DK", "NO", "SE", "EE", "LT", "LV", "PT", "BE"
-            ] // All
+            country_codes // All
         };
 
         const linkTokenResponse: any = {};
