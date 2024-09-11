@@ -50,7 +50,7 @@ Deno.serve({
             return new Response("No Session Found token:"
                 + payload.token, { status: 401 });
 
-        // Create a new ratelimiter, that allows 1 requests per 60 minutes
+        // Create a new ratelimiter, that allows 10 requests per 720 minutes
         const ratelimit = new Ratelimit({
             redis,
             limiter: Ratelimit.slidingWindow(10, "720 m"),
